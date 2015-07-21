@@ -16,7 +16,7 @@ Initialize your blog inside an empty directory:
 
     hasclunk init
 
-Generate your blog inside website/
+Generate your blog (result will go into website/)
 
     hasclunk build
 
