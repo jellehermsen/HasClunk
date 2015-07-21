@@ -50,3 +50,9 @@ textToInt t = read $ Text.unpack t :: Int
 -- | 'htmlExt' appends ".html" to a given Text
 htmlExt :: Text.Text -> Text.Text
 htmlExt = flip Text.append ".html"
+
+
+-------------------------------------------------------------------------------
+-- | 'noExt' removes the extension form a filename
+noExt :: Text.Text -> Text.Text
+noExt = Text.init . fst . Text.breakOnEnd "."

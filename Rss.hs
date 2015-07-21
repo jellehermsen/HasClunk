@@ -13,6 +13,8 @@ module Rss (rss) where
 import qualified Data.Text        as Text
 import           PostMeta
 
+-------------------------------------------------------------------------------
+-- | rss returns an rss feed for a given list of postmetas
 rss :: [PostMeta] -> Text.Text -> Text.Text -> Text.Text -> Text.Text
 rss posts title url description = 
     Text.concat $ ["<?xml version=\"1.0\"?>\n"
@@ -24,6 +26,8 @@ rss posts title url description =
         ++ [Text.concat (map (rssPost url) posts)]
         ++ ["</channel>\n</rss>"]
         
+-------------------------------------------------------------------------------
+-- | rssPost creates an <item> for a given url and post
 rssPost :: Text.Text -> PostMeta -> Text.Text
 rssPost url post = Text.concat ["<item>\n<title>", (title post), "</title>\n"
     , "<link>" , link, "</link>"

@@ -55,9 +55,10 @@ notEmptyError = Text.unpack
 --   during initialization
 defaultFiles :: [(FilePath, Text.Text)]
 defaultFiles = [
-      ("config"                         , defaultFile "config"),
-      ("template/header.html"           , defaultFile "header"),
-      ("template/footer.html"           , defaultFile "footer"),
-      ("posts/2015-07-14-hello-world.md", defaultFile "post"),
-      ("assets/style.css"               , defaultFile "css")
+    ("config"                         , defaultFile "config"),
+    ("template/header.html"           , defaultFile "header"),
+    ("template/footer.html"           , defaultFile "footer"),
+    ("posts/2015-07-14-hello-world.md", defaultFile "post"),
+    ("assets/style.css"               , defaultFile "css"),
+    ("pages/contact.md"               , defaultFile "contact")
   ]

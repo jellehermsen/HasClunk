@@ -73,9 +73,16 @@ build = do
     -- Get the metadata for all the posts
     meta <- mapM getPostMeta posts
 
+    -- Get page titles
+    pageTitles <- mapM getPageTitle pages
+
     -- Add post headers to all the posts
     putStrLn $ Text.unpack "Adding postheader to posts"
     mapM_ addPostHtml meta
+
+    -- Add page headers to all the pages
+    putStrLn $ Text.unpack "Adding pageheaders to pages"
+    mapM_ addPageHtml pageTitles
 
     putStrLn $ Text.unpack "Adding templates to files"
     -- Add templates to all the html files
@@ -136,8 +143,25 @@ getPostMeta file = do
         date f          = Text.tail $ Text.concat $ map (Text.append "-") 
                             $ take 3 (Text.splitOn "-" file) -- ugly
 
-        noExt = Text.init . fst . Text.breakOnEnd "."
 
+-------------------------------------------------------------------------------
+-- | 'getPageTitle' parses a page's metadata from the markdown file
+getPageTitle :: Text.Text -> IO (Text.Text, Text.Text)
+getPageTitle file = do
+    content <- IO.readFile $ (Text.unpack "pages/") ++ (Text.unpack file)
+    html    <- IO.readFile $ (Text.unpack "website/pages/") ++ (Text.unpack $ htmlExt $ noExt file)
+
+    let metaList = map parseMetaLine $ filter (not . Text.null) $ Text.lines 
+                     $ Text.replace "<!--" "" $ fst 
+                     $ Text.breakOn "-->" content
+
+    return (file, title metaList)
+    where
+        title m         = justOrError (lookup "title" m) 
+                            $ "Title not defined in " `Text.append` file
+        parseMetaLine t = (Text.strip $ fst $ breakOnColon t, Text.strip 
+                            $ Text.tail $ snd $ breakOnColon t)
+        breakOnColon    = Text.breakOn ":"
 
 -------------------------------------------------------------------------------
 -- | 'addTemplate' adds the footer ander header to a file
@@ -147,7 +171,6 @@ addTemplate header footer directory file = do
     IO.writeFile path $ Text.concat [header, content, footer]
     where
         path = Text.unpack $ directory `Text.append` (htmlExt $ noExt file) 
-        noExt = Text.init . fst . Text.breakOnEnd "."
 
 
 -------------------------------------------------------------------------------
@@ -159,6 +182,17 @@ addPostHtml post = do
     where
         path = Text.unpack $ Text.append "website/posts/" 
           $ htmlExt $ fileName post
+
+
+-------------------------------------------------------------------------------
+-- | 'addPageHtml' adds the header/footer to a page
+addPageHtml :: (Text.Text, Text.Text) -> IO ()
+addPageHtml (filename, title) = do
+    content <- IO.readFile path
+    IO.writeFile path $ pageHtml content title filename
+    where
+        path = Text.unpack $ Text.append "website/pages/" $ htmlExt 
+          $ noExt filename
 
 
 -------------------------------------------------------------------------------
@@ -238,5 +272,3 @@ convertFile srcDir targetDir convertCmd file
                       (Text.append targetDir $ htmlExt $ noExt file) 
                   $ Text.replace "{in}"  
                       (srcDir `Text.append` file) convertCmd
-    where
-        noExt = Text.init . fst . Text.breakOnEnd "."

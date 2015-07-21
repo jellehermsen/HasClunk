@@ -18,11 +18,12 @@ import Text.RawString.QQ
 -------------------------------------------------------------------------------
 -- | 'defaultFile' gives the file contents for usage during initialization
 defaultFile :: Text.Text -> Text.Text
-defaultFile "config" = config
-defaultFile "css"    = css
-defaultFile "footer" = footer
-defaultFile "header" = header
-defaultFile "post"   = post
+defaultFile "config"  = config
+defaultFile "css"     = css
+defaultFile "footer"  = footer
+defaultFile "header"  = header
+defaultFile "post"    = post
+defaultFile "contact" = contact
 
 
 -------------------------------------------------------------------------------
@@ -99,6 +100,15 @@ ille exactum.
 
 
 -------------------------------------------------------------------------------
+contact :: Text.Text
+contact = [r|<!--
+title: Contact
+-->
+You can contact me through the interwebs.
+|]
+
+
+-------------------------------------------------------------------------------
 header :: Text.Text
 header = [r|<!DOCTYPE html>
 <html>
@@ -110,7 +120,6 @@ header = [r|<!DOCTYPE html>
     <title>HasClunk blog</title>
 </head>
 <body>
-    <!-- mobile menu -->
     <header>
         <h1><a href="/">HasClunk blog</a></h1>
         <a href="/feed.xml" class="rss"/>RSS</a>
@@ -122,13 +131,14 @@ header = [r|<!DOCTYPE html>
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/archive.html">Archive</a></li>
+            <li><a href="/pages/contact.html">Contact</a></li>
         </ul>
     </nav>
-
     <nav class="desktop">
         <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/archive.html">Archive</a></li>
+            <li><a href="/pages/contact.html">Contact</a></li>
         </ul>
     </nav>
     <main>

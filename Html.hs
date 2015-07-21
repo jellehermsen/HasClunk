@@ -8,7 +8,7 @@ Maintainer  : j@jelle.xyz
 Stability   : experimental
 Portability : POSIX
 -}
-module Html (categoryIndex, archive, index, postHtml) where
+module Html (categoryIndex, archive, index, postHtml, pageHtml) where
 
 import qualified Data.Text        as Text
 import           PostMeta
@@ -66,6 +66,25 @@ listCategories cats = Text.concat $ map (\x -> Text.concat
 -- | 'index' gives all posts for display in the index.html
 index :: [PostMeta] -> Text.Text
 index posts = Text.concat $ map (postHtml True) posts
+
+
+-------------------------------------------------------------------------------
+pageHtml :: Text.Text -> Text.Text -> Text.Text -> Text.Text
+pageHtml content title filename = 
+    Text.concat 
+      ["<article>"
+      , "<header>\n" , pageHeader title filename, "</header>\n"
+      , "<section>\n", content,         "</section>\n"
+      , "</article>\n\n"]
+
+
+-------------------------------------------------------------------------------
+-- | 'pageHeader' gives the header for a specific post
+pageHeader :: Text.Text -> Text.Text -> Text.Text
+pageHeader title filename = Text.concat 
+    ["<h1><a href=\"", link, "\">", title , "</a></h1>\n"]
+    where
+    link = Text.concat ["/posts/", htmlExt $ filename]
 
 
 -------------------------------------------------------------------------------

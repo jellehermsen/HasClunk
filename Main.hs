@@ -37,7 +37,7 @@ version = "0.01"
 
 -------------------------------------------------------------------------------
 help :: String
-help = [r|Usage:: hasclunk [OPTION]
+help = [r|Usage:: HasClunk [OPTION]
 
 HasClunk is a tiny, dependency light static blog generator.
 
