@@ -1,25 +1,43 @@
-HasClunk
-========
-An extremely simple static blog generator made in Haskell, licensed under BSD3
+{-# LANGUAGE QuasiQuotes #-}
+{-|
+Module      : Main
+Description : A tiny, dependency light, static blog generator
+Copyright   : (c) Jelle Hermsen, 2015
+License     : BSD3 
+Maintainer  : j@jelle.xyz
+Stability   : experimental
+Portability : POSIX
+-}
+module Main where
 
-Installation
-------------
-Make sure you have ghc and cabal installed.
+import qualified System.Environment as Environment
+import           Text.RawString.QQ
+import           Build
+import           Init
 
-You can install this using:
-    cabal install
 
-Usage
------
-Initialize your blog inside an empty directory:
-    HasClunk init
+-------------------------------------------------------------------------------
+main :: IO ()
+main = do
+    args <- Environment.getArgs
+    if length args == 0
+        then
+            error "Please supply an argument, or --help for help"
+        else
+            case args !! 0 of
+                "build"     -> build
+                "init"      -> initBlog
+                "--version" -> putStrLn version
+                "--help"    -> putStrLn help
 
-Generate your blog inside website/
-    HasClunk build
+-------------------------------------------------------------------------------
+version :: String
+version = "0.01"
 
-Help
-----
-Usage:: HasClunk [OPTION]
+
+-------------------------------------------------------------------------------
+help :: String
+help = [r|Usage:: hasclunk [OPTION]
 
 HasClunk is a tiny, dependency light static blog generator.
 
@@ -60,3 +78,4 @@ The configuration file has the following properties:
                    and convert your odt, if that tickles your fancy :-)
   url            the base-url of the website (mind the trailing /)
   title          the weblog title (for usage in RSS)
+|]
