@@ -14,16 +14,16 @@ Usage
 -----
 Initialize your blog inside an empty directory:
 
-    HasClunk init
+    hasclunk init
 
 Generate your blog inside website/
 
-    HasClunk build
+    hasclunk build
 
 Help
 ----
 ```txt
-Usage:: HasClunk [OPTION]
+Usage:: hasclunk [OPTION]
 
 HasClunk is a tiny, dependency light static blog generator.
   init        initializes the blog, you should use this in an empty directory
