@@ -54,7 +54,8 @@ HasClunk has two template files, template/header.html and template/footer.html.
 All the generated html files will get smacked between these two files.
 
 You can use {base_url} in these template files to refer to the url in your
-config. It will get automatically replaced during the build process.
+config. There's also {title} you can drop in. These will get automatically
+replaced during the build process.
 
 Help
 ----
