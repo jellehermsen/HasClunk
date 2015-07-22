@@ -2,7 +2,7 @@
 Module      : PostMeta
 Description : A tiny, dependency light, static blog generator
 Copyright   : (c) Jelle Hermsen, 2015
-License     : BSD3 
+License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental
 Portability : POSIX

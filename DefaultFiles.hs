@@ -4,7 +4,7 @@
 Module      : Html
 Description : A tiny, dependency light, static blog generator
 Copyright   : (c) Jelle Hermsen, 2015
-License     : BSD3 
+License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental
 Portability : POSIX
@@ -35,8 +35,8 @@ posts_on_home = 10
 # Use {in} and {out} for the source and target file
 convert = pandoc -f markdown -w html -o {out} {in}
 
-# The url of the website
-url = http://jelle.aard.xyz/
+# The url of the website, mind the trailing /
+url = http://jelle.aard.xyz/test/
 
 # The title of the website (used in the RSS)
 title = HasClunk blog
@@ -116,29 +116,29 @@ header = [r|<!DOCTYPE html>
     <meta charset="utf-8">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <link href="/assets/style.css" rel="stylesheet" />
+    <link href="{base_url}assets/style.css" rel="stylesheet" />
     <title>HasClunk blog</title>
 </head>
 <body>
     <header>
-        <h1><a href="/">HasClunk blog</a></h1>
-        <a href="/feed.xml" class="rss"/>RSS</a>
+        <h1><a href="{base_url}">HasClunk blog</a></h1>
+        <a href="{base_url}feed.xml" class="rss"/>RSS</a>
         <br class="clearfix"/>
     </header>
     <input type="checkbox" id="nav-trigger" class="nav-trigger" />
     <label for="nav-trigger">Menu</label>
     <nav class="mobile">
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/archive.html">Archive</a></li>
-            <li><a href="/pages/contact.html">Contact</a></li>
+            <li><a href="{base_url}">Home</a></li>
+            <li><a href="{base_url}archive.html">Archive</a></li>
+            <li><a href="{base_url}pages/contact.html">Contact</a></li>
         </ul>
     </nav>
     <nav class="desktop">
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/archive.html">Archive</a></li>
-            <li><a href="/pages/contact.html">Contact</a></li>
+            <li><a href="{base_url}">Home</a></li>
+            <li><a href="{base_url}archive.html">Archive</a></li>
+            <li><a href="{base_url}pages/contact.html">Contact</a></li>
         </ul>
     </nav>
     <main>
@@ -152,7 +152,7 @@ footer = [r|
     <footer>
         <div class="copyright">&copy; 2015</div>
         <div class="hasclunk">
-            Weblog ambivalently powered by 
+            Weblog ambivalently powered by
             <a href="https://github.com/jellehermsen/HasClunk">HasClunk</a>
         </div>
     </footer>
@@ -193,7 +193,7 @@ nav.mobile, label[for="nav-trigger"], .nav-trigger {
 
 /* --- Main --- */
 main {
-   position: relative; 
+   position: relative;
    margin: 0 auto;
    width: 700px;
    text-align: left;
@@ -388,7 +388,7 @@ article a.readmore {
     }
 
     main {
-        width: 100%;    
+        width: 100%;
     }
 
     nav.mobile {

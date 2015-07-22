@@ -20,6 +20,42 @@ Generate your blog (result will go into website/)
 
     hasclunk build
 
+Writing posts
+-------------
+You can write posts by simply putting files in the posts directory. Add the date
+in front like so: 2015-07-14-teaser-post.md
+
+By default HasClunk uses Pandoc to generate html from your source
+files, but you could use any kind of system you like. Just modify the config
+file and change the "convert" line.
+
+At the top of your post you should include an html comment that gives some
+metadata.  HasClunk will take this data from the generated html, so you can do
+whatever trickery is needed to get it out of your source format. In markdown you
+can simply add an html comment on top:
+
+```html
+<!--
+title: Hello world
+categories: categoryName
+-->
+
+```
+
+Writing pages
+-------------
+Writing new pages is mostly like writing posts, with the exceptions that you
+don't need to tag the date on front, and you don't need to include categories in
+the metadata.
+
+Modifying the template
+----------------------
+HasClunk has two template files, template/header.html and template/footer.html.
+All the generated html files will get smacked between these two files.
+
+You can use {base_url} in these template files to refer to the url in your
+config. It will get automatically replaced during the build process.
+
 Help
 ----
 ```txt
@@ -53,6 +89,7 @@ HasClunk generates a couple of files for your bloggy goodness:
   config               the configuration file, read more below about this
   template/header.html the template header
   template/footer.html the template footer
+  pages/contact.md     an example page
   posts/2015-07-14-teaser-post.md an example post
 
 The configuration file has the following properties:
@@ -63,4 +100,15 @@ The configuration file has the following properties:
                    and convert your odt, if that tickles your fancy :-)
   url            the base-url of the website (mind the trailing /)
   title          the weblog title (for usage in RSS)
+
+Posts need the following metadata on top in an html comment:
+<!--
+title: Post Title
+categories: cat1, cat2, cat3
+-->
+
+Pages need the following metadata on top in an html comment:
+<!--
+title: Page title
+-->
 ```

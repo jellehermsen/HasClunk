@@ -4,7 +4,7 @@
 Module      : Html
 Description : A tiny, dependency light, static blog generator
 Copyright   : (c) Jelle Hermsen, 2015
-License     : BSD3 
+License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental
 Portability : POSIX
@@ -25,8 +25,8 @@ import DefaultFiles
 initBlog :: IO ()
 initBlog = do
     dirContents <- Directory.getDirectoryContents "."
-    if (length dirContents > 2) 
-        then 
+    if (length dirContents > 2)
+        then
             putStrLn notEmptyError
         else
             do
@@ -38,7 +38,7 @@ initBlog = do
 -- | 'directories' lists the directories that need to be created during
 --   initialization
 directories :: [FilePath]
-directories = map Text.unpack 
+directories = map Text.unpack
   ["assets", "pages", "posts", "template", "website"]
 
 
@@ -46,7 +46,7 @@ directories = map Text.unpack
 -- | 'notEmptyError' gives the error message you get when you try to
 --   initialize the blog inside a non-empty directory
 notEmptyError :: String
-notEmptyError = Text.unpack 
+notEmptyError = Text.unpack
   "Error: you should only use `HasClunk init` inside an empty directory"
 
 

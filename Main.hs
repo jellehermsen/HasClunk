@@ -3,7 +3,7 @@
 Module      : Main
 Description : A tiny, dependency light, static blog generator
 Copyright   : (c) Jelle Hermsen, 2015
-License     : BSD3 
+License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental
 Portability : POSIX
@@ -68,14 +68,26 @@ HasClunk generates a couple of files for your bloggy goodness:
   config               the configuration file, read more below about this
   template/header.html the template header
   template/footer.html the template footer
+  pages/contact.md     an example page
   posts/2015-07-14-teaser-post.md an example post
 
 The configuration file has the following properties:
   posts_on_home  the amount of posts shown on the homepage
-  convert        the shell command used to convert/move your posts by default 
+  convert        the shell command used to convert/move your posts by default
                    is assumes you use markdown and it uses pandoc to convert
                    them to html, but you could even use a headless libreoffice
                    and convert your odt, if that tickles your fancy :-)
   url            the base-url of the website (mind the trailing /)
   title          the weblog title (for usage in RSS)
+
+Posts need the following metadata on top in an html comment:
+<!--
+title: Post Title
+categories: cat1, cat2, cat3
+-->
+
+Pages need the following metadata on top in an html comment:
+<!--
+title: Page title
+-->
 |]
