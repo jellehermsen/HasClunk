@@ -64,8 +64,10 @@ build = do
     -- Retrieve the header and footer files
     headerRaw  <- IO.readFile "template/header.html"
     footerRaw  <- IO.readFile "template/footer.html"
-    let header = Text.replace "{base_url}" url headerRaw
-    let footer = Text.replace "{base_url}" url footerRaw
+    let header = Text.replace "{title}" title
+            $ Text.replace "{base_url}" url headerRaw
+    let footer = Text.replace "{title}" title
+            $ Text.replace "{base_url}" url footerRaw
 
     -- Remove the website directory and create a fresh one
     Directory.removeDirectoryRecursive "website"

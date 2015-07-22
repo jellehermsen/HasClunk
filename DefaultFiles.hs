@@ -117,24 +117,17 @@ header = [r|<!DOCTYPE html>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <link href="{base_url}assets/style.css" rel="stylesheet" />
+    <link rel="alternate" type="application/rss+xml" 
+      title="RSS Feed for {title}" href="{base_url}feed.xml" />
     <title>HasClunk blog</title>
 </head>
 <body>
     <header>
-        <h1><a href="{base_url}">HasClunk blog</a></h1>
+        <h1><a href="{base_url}">{title}</a></h1>
         <a href="{base_url}feed.xml" class="rss"/>RSS</a>
         <br class="clearfix"/>
     </header>
-    <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-    <label for="nav-trigger">Menu</label>
-    <nav class="mobile">
-        <ul>
-            <li><a href="{base_url}">Home</a></li>
-            <li><a href="{base_url}archive.html">Archive</a></li>
-            <li><a href="{base_url}pages/contact.html">Contact</a></li>
-        </ul>
-    </nav>
-    <nav class="desktop">
+    <nav>
         <ul>
             <li><a href="{base_url}">Home</a></li>
             <li><a href="{base_url}archive.html">Archive</a></li>
@@ -185,10 +178,6 @@ br.clearfix {
 h1, h2, h3, h4, h5, h6 {
     color: #000;
     font-weight: normal;
-}
-
-nav.mobile, label[for="nav-trigger"], .nav-trigger {
-    display: none;
 }
 
 /* --- Main --- */
@@ -249,7 +238,7 @@ footer div.hasclunk {
 }
 
 /* --- Navigation --- */
-nav.desktop ul {
+nav ul {
     list-style: none;
     display: inline;
     margin: 0px;
@@ -257,13 +246,13 @@ nav.desktop ul {
     clear: both;
 }
 
-nav.desktop li {
+nav li {
     margin-right: 10px;
     display: inline;
     line-height: 40px;
 }
 
-nav.desktop li a {
+nav li a {
     font-size: 24px;
     border-bottom: none;
 }
@@ -366,8 +355,13 @@ article a.readmore {
 
 /* --- Mobile -- */
 @media screen and (max-width: 700px) {
-    a.rss, nav.desktop {
+    a.rss {
         display: none;
+    }
+
+    nav li a {
+        font-size: 18px;
+        border-bottom: none;
     }
 
     article section {
@@ -389,48 +383,6 @@ article a.readmore {
 
     main {
         width: 100%;
-    }
-
-    nav.mobile {
-        clear: both;
-        width: auto;
-        height: auto;
-        text-align: center;
-        display: none;
-        padding-top: 10px;
-    }
-
-    nav.mobile ul {
-        list-style: none;
-        margin: 0px;
-        padding: 0px;
-    }
-
-    nav.mobile li {
-        clear: both;
-        font-size: 24px;
-        border-bottom: none;
-        margin-bottom: 10px;
-    }
-
-    label[for="nav-trigger"] {
-        display: block;
-        width: 100%;
-        margin: 5px 10px 5px 0px;
-        padding: 0px;
-        border-bottom: none;
-        cursor: pointer;
-        font-size: 28px;
-        clear: both;
-        text-align: center;
-    }
-
-    .nav-trigger:checked ~ nav.mobile {
-        display: block;
-    }
-
-    .nav-trigger + label, .site-wrap {
-        transition: top 0.2s;
     }
 }
 |]
