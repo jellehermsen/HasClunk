@@ -42,6 +42,8 @@ categories: categoryName
 
 ```
 
+You can use {base_url} in posts to indicate your blog's url defined in your config.
+
 Writing pages
 -------------
 Writing new pages is mostly like writing posts, with the exceptions that you

@@ -107,7 +107,7 @@ postHtml baseUrl excerpt post = if excerpt
           , "<footer>\n" , postFooter baseUrl post, "</footer>\n"
           , "</article>\n\n"]
     where
-        content = html post
+        content = Text.replace "{base_url}" baseUrl $ html post
         untilMore = fst . Text.breakOn "<!--more-->"
         moreLink p = Text.concat ["<a class=\"readmore\" href=\"", baseUrl
           ,"posts/" ,htmlExt $ fileName p, "\">Read more...</a>"]

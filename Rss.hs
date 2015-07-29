@@ -11,6 +11,7 @@ Portability : POSIX
 module Rss (rss) where
 
 import qualified Data.Text        as Text
+import           Helpers
 import           PostMeta
 
 -------------------------------------------------------------------------------
@@ -23,7 +24,8 @@ rss posts title url description =
         , "<link>", url, "</link>\n"
         , "<atom:link href=\"", url
         , "feed.xml\" rel=\"self\" type=\"application/rss+xml\" />"
-        , "<description>", description, "</description>"]
+        , "<description>", Text.replace "{base_url}" url description
+        , "</description>"]
         ++ [Text.concat (map (rssPost url) posts)]
         ++ ["</channel>\n</rss>"]
 
@@ -34,7 +36,7 @@ rssPost :: Text.Text -> PostMeta -> Text.Text
 rssPost url post = Text.concat ["<item>\n<title>", (title post), "</title>\n"
     , "<link>" , link, "</link>"
     , "<guid>", link, "</guid>\n"
-    , "<description><![CDATA[", (html post), "]]></description>\n</item>\n"]
+    , "<description><![CDATA[", Text.replace "{base_url}" url (html post)
+    , "]]></description>\n</item>\n"]
     where
-        link = Text.concat [url, "posts/", Text.replace ".md" ".html"
-          $ fileName post]
+        link = Text.concat [url, "posts/", htmlExt $ fileName post]
