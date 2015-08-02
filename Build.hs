@@ -80,13 +80,14 @@ build = do
 
     -- Get the metadata for all the posts
     meta <- mapM getPostMeta posts
+    let metaSorted = List.sortBy (\x y -> compare (date y) (date x)) meta
 
     -- Get page titles
     pageTitles <- mapM getPageTitle pages
 
     -- Add post headers to all the posts
     putStrLn $ Text.unpack "Adding postheader to posts"
-    mapM_ (addPostHtml baseUrl) meta
+    mapM_ (addPostHtml baseUrl) metaSorted
 
     -- Add page headers to all the pages
     putStrLn $ Text.unpack "Adding pageheaders to pages"
@@ -103,7 +104,7 @@ build = do
     Cmd.system "cp -R assets/* website/assets/"
 
     -- Create the category files
-    let catList  = categoryList meta
+    let catList  = categoryList metaSorted
     let catFiles = map (categoryFile baseUrl header footer) catList
 
     mapM_ (\x -> IO.writeFile (Text.unpack $ Text.append "website/" $ fst x)
@@ -111,15 +112,15 @@ build = do
 
     -- Create the archive
     IO.writeFile "website/archive.html" $ Text.concat
-      [header, archive baseUrl catList meta, footer]
+      [header, archive baseUrl catList metaSorted, footer]
 
     -- Create the rss feed
-    IO.writeFile "website/feed.xml" $ rss meta title url description
+    IO.writeFile "website/feed.xml" $ rss metaSorted title url description
 
     -- Create the index
     IO.writeFile "website/index.html"
       $ Text.concat [header, Html.index baseUrl
-      $ take postsOnHome meta, footer]
+      $ take postsOnHome metaSorted, footer]
 
 
 -------------------------------------------------------------------------------
