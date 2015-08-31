@@ -121,7 +121,7 @@ header = [r|<!DOCTYPE html>
       title="RSS Feed for {title}" href="{base_url}feed.xml" />
     <title>HasClunk blog</title>
 </head>
-<body>
+<body class="{pageType}">
     <header>
         <h1><a href="{base_url}">{title}</a></h1>
         <a href="{base_url}feed.xml" class="rss"/>RSS</a>

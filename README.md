@@ -59,6 +59,11 @@ You can use {base_url} in these template files to refer to the url in your
 config. There's also {title} you can drop in. These will get automatically
 replaced during the build process.
 
+You can use {page_type} inside you header.html. It will be replaced with the
+type of page you're currently visiting (doh). You can use it for example in
+body="{page_type}" to be able to add page-specific css trickery. The possible
+values for page_type are: index, category, post and archive.
+
 Help
 ----
 ```txt

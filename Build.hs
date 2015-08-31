@@ -95,8 +95,8 @@ build = do
 
     putStrLn $ Text.unpack "Adding templates to files"
     -- Add templates to all the html files
-    mapM_ (addTemplate header footer "website/posts/") posts
-    mapM_ (addTemplate header footer "website/pages/") pages
+    mapM_ (addTemplate (pt "post" header) footer "website/posts/") posts
+    mapM_ (addTemplate (pt "page" header) footer "website/pages/") pages
 
     -- Copy all the assets to the website
     -- I've looked at doing this in Haskell, but this leads
@@ -105,23 +105,26 @@ build = do
 
     -- Create the category files
     let catList  = categoryList metaSorted
-    let catFiles = map (categoryFile baseUrl header footer) catList
+    let catFiles = map (categoryFile baseUrl 
+            (pt "category" header) footer) catList
 
     mapM_ (\x -> IO.writeFile (Text.unpack $ Text.append "website/" $ fst x)
       (snd x)) catFiles
 
     -- Create the archive
     IO.writeFile "website/archive.html" $ Text.concat
-      [header, archive baseUrl catList metaSorted, footer]
+      [pt "archive" header, archive baseUrl catList metaSorted, footer]
 
     -- Create the rss feed
     IO.writeFile "website/feed.xml" $ rss metaSorted title url description
 
     -- Create the index
     IO.writeFile "website/index.html"
-      $ Text.concat [header, Html.index baseUrl
+      $ Text.concat [pt "index" header, Html.index baseUrl
       $ take postsOnHome metaSorted, footer]
 
+    where
+        pt x = Text.replace "{page_type}" x
 
 -------------------------------------------------------------------------------
 -- | 'getPostMeta' parses a post's metadata from the converted html
