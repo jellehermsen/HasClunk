@@ -261,7 +261,8 @@ nav li a {
 article {
     background-color: #FFF;
     border: solid 1px #CCC;
-    margin-top: 30px;
+    margin: 30px auto;
+    max-width: 600px;
     text-align: left;
 }
 

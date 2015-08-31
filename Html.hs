@@ -73,7 +73,7 @@ index baseUrl posts = Text.concat $ map (postHtml baseUrl True) posts
 pageHtml :: Text.Text -> Text.Text -> Text.Text -> Text.Text
 pageHtml content title filename =
     Text.concat
-      ["<article>"
+      ["<article class=\"index\">"
       , "<header>\n" , pageHeader title filename, "</header>\n"
       , "<section>\n", content,         "</section>\n"
       , "</article>\n\n"]
