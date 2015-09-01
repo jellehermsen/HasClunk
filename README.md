@@ -61,8 +61,8 @@ replaced during the build process.
 
 You can use {page_type} inside you header.html. It will be replaced with the
 type of page you're currently visiting (doh). You can use it for example in
-body="{page_type}" to be able to add page-specific css trickery. The possible
-values for page_type are: index, category, post and archive.
+&lt;body class="{page_type}"&gt; to be able to add page-specific css trickery.
+The possible values for page_type are: index, category, post and archive.
 
 Help
 ----
