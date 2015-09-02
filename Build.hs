@@ -33,11 +33,6 @@ build = do
     rawPosts   <- Directory.getDirectoryContents $ Text.unpack "posts"
     rawPages   <- Directory.getDirectoryContents $ Text.unpack "pages"
 
-
-    -- Weed out all the non-markdown files
-    let posts   = filterFiles rawPosts
-    let pages   = filterFiles rawPages
-
     -- Parse the config file
     let config  = parseConfig rawConfig
     let url     = justOrError (lookup "url" config)
@@ -51,6 +46,11 @@ build = do
             "Could not find 'posts_on_home' in your config"
     let baseUrl = justOrError (lookup "url" config)
             "Could not find 'url' in your config"
+    let extension = justOrDefault (lookup "extension" config) ".md"
+
+    -- Weed out all the non-markdown files
+    let posts   = filterFiles extension rawPosts
+    let pages   = filterFiles extension rawPages
 
     -- Create all the markdown conversion commands
     let convertCmd = justOrError (lookup "convert" config)
@@ -59,7 +59,6 @@ build = do
             map (convertFile "posts/" "website/posts/" convertCmd) posts
     let pageCmds =
             map (convertFile "pages/" "website/pages/" convertCmd) pages
-
 
     -- Retrieve the header and footer files
     headerRaw  <- IO.readFile "template/header.html"
@@ -261,8 +260,8 @@ mergeCategory cats cat = case lookup (fst cat) cats of
 
 -------------------------------------------------------------------------------
 -- | 'filterFiles' removes all non-markdown files from a list
-filterFiles :: [FilePath] -> [Text.Text]
-filterFiles = filter (Text.isSuffixOf ".md") . map Text.pack
+filterFiles :: Text.Text -> [FilePath] -> [Text.Text]
+filterFiles ext = filter (Text.isSuffixOf ext) . map Text.pack
 
 
 -------------------------------------------------------------------------------
@@ -283,6 +282,6 @@ parseConfig config = map cleanUpValues $ map (Text.breakOn "=")
 convertFile :: Text.Text -> Text.Text -> Text.Text -> Text.Text -> String
 convertFile srcDir targetDir convertCmd file
     = Text.unpack $ Text.replace "{out}"
-                      (Text.append targetDir $ htmlExt $ noExt file)
-                  $ Text.replace "{in}"
+                       (Text.append targetDir $ htmlExt $ noExt file)
+                   $ Text.replace "{in}"
                       (srcDir `Text.append` file) convertCmd

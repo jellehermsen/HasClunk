@@ -27,7 +27,8 @@ in front like so: 2015-07-14-teaser-post.md
 
 By default HasClunk uses Pandoc to generate html from your source
 files, but you could use any kind of system you like. Just modify the config
-file and change the "convert" line.
+file and change the "convert" line. You can also change the "extension" line to
+specify the the file extension of the posts/pages. This defaults to ".md".
 
 At the top of your post you should include an html comment that gives some
 metadata.  HasClunk will take this data from the generated html, so you can do
