@@ -55,6 +55,13 @@ textToInt t = read $ Text.unpack t :: Int
 
 
 -------------------------------------------------------------------------------
+-- | 'textToBool' Converts a given text to an bool
+textToBool :: Text.Text -> Bool
+textToBool "0" = False
+textToBool "1" = True
+textToBool _   = False
+
+-------------------------------------------------------------------------------
 -- | 'htmlExt' appends ".html" to a given Text
 htmlExt :: Text.Text -> Text.Text
 htmlExt = flip Text.append ".html"

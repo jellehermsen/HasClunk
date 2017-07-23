@@ -31,7 +31,7 @@ config :: Text.Text
 config = [r|# Amount of posts on your homepage
 posts_on_home = 10
 
-# Commandline argument to convert your source files in pages/posts
+-- Commandline argument to convert your source files in pages/posts
 # Use {in} and {out} for the source and target file
 convert = pandoc -f markdown -w html -o {out} {in}
 
@@ -120,7 +120,7 @@ header = [r|<!DOCTYPE html>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <link href="{base_url}assets/style.css" rel="stylesheet" />
-    <link rel="alternate" type="application/rss+xml" 
+    <link rel="alternate" type="application/rss+xml"
       title="RSS Feed for {title}" href="{base_url}feed.xml" />
     <title>HasClunk blog</title>
 </head>

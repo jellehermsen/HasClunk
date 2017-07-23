@@ -79,6 +79,9 @@ The configuration file has the following properties:
                    and convert your odt, if that tickles your fancy :-)
   url            the base-url of the website (mind the trailing /)
   title          the weblog title (for usage in RSS)
+  home_is_page   whether you want a static page used as home (in that case use
+                   "1" here). The blog index gets moved to /blog.html in that
+                   case.
 
 Posts need the following metadata on top in an html comment:
 <!--

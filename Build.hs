@@ -16,6 +16,7 @@ import qualified Data.Text        as Text
 import qualified Data.Text.IO     as IO
 import qualified System.Directory as Directory
 import qualified System.Cmd       as Cmd
+import           System.Directory(copyFile)
 import           Helpers
 import           Html
 import           PostMeta
@@ -47,6 +48,8 @@ build = do
     let baseUrl = justOrError (lookup "url" config)
             "Could not find 'url' in your config"
     let extension = justOrDefault (lookup "extension" config) ".md"
+    let homeIsPage = Helpers.textToBool
+            $ justOrDefault (lookup "home_is_page" config) "1"
 
     -- Weed out all the non-markdown files
     let posts   = filterFiles extension rawPosts
@@ -104,7 +107,7 @@ build = do
 
     -- Create the category files
     let catList  = categoryList metaSorted
-    let catFiles = map (categoryFile baseUrl 
+    let catFiles = map (categoryFile baseUrl
             (pt "category" header) footer) catList
 
     mapM_ (\x -> IO.writeFile (Text.unpack $ Text.append "website/" $ fst x)
@@ -117,8 +120,16 @@ build = do
     -- Create the rss feed
     IO.writeFile "website/feed.xml" $ rss metaSorted title url description
 
+    let blogHome = if homeIsPage then "website/blog.html"
+                   else "website/index.html"
+
     -- Create the index
-    IO.writeFile "website/index.html"
+    if homeIsPage then
+        copyFile "website/pages/home.html" "website/index.html"
+    else
+        return ()
+
+    IO.writeFile blogHome
       $ Text.concat [pt "index" header, Html.index baseUrl
       $ take postsOnHome metaSorted, footer]
 
@@ -189,7 +200,7 @@ addTemplate header footer directory file = do
 -------------------------------------------------------------------------------
 -- | 'addPostHtml' adds the header/footer to a post
 addPostHtml :: Text.Text -> PostMeta -> IO ()
-addPostHtml baseUrl post = 
+addPostHtml baseUrl post =
     IO.writeFile path $ postHtml baseUrl False post
     where
         path = Text.unpack $ Text.append "website/posts/"

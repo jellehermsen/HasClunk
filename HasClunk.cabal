@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                HasClunk
-version:             0.1.0.0
+version:             0.2.0.0
 synopsis:            A tiny - dependency light - static blog generator.
 -- description:         
 homepage:            https://github.com/jellehermsen/HasClunk
