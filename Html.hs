@@ -66,7 +66,7 @@ listCategories baseUrl cats = Text.concat $ map (\x -> Text.concat
 -------------------------------------------------------------------------------
 -- | 'index' gives all posts for display in the index.html
 index :: Text.Text -> [PostMeta] -> Text.Text
-index baseUrl posts = Text.concat $ map (postHtml baseUrl True False) posts
+index baseUrl posts = Text.concat $ map (postHtml baseUrl False False) posts
 
 
 -------------------------------------------------------------------------------
