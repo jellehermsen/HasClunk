@@ -201,7 +201,7 @@ addTemplate header footer directory file = do
 -- | 'addPostHtml' adds the header/footer to a post
 addPostHtml :: Text.Text -> PostMeta -> IO ()
 addPostHtml baseUrl post =
-    IO.writeFile path $ postHtml baseUrl False post
+    IO.writeFile path $ postHtml baseUrl False True post
     where
         path = Text.unpack $ Text.append "website/posts/"
           $ htmlExt $ fileName post

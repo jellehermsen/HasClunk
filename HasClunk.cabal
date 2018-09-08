@@ -2,7 +2,7 @@
 -- documentation, see http://haskell.org/cabal/users-guide/
 
 name:                HasClunk
-version:             0.2.0.0
+version:             0.2.0.1
 synopsis:            A tiny - dependency light - static blog generator.
 -- description:         
 homepage:            https://github.com/jellehermsen/HasClunk
@@ -20,6 +20,6 @@ executable hasclunk
   main-is:             Main.hs
   other-modules:       Helpers, Html, PostMeta, Rss
   other-extensions:    OverloadedStrings
-  build-depends:       base >=4.6, text >=0.11, directory >=1.2, process >=1.1, template-haskell >= 2.5, raw-strings-qq >= 1.0
+  build-depends:       base >=4.6, text >=0.11, directory >=1.2, process >=1.1, template-haskell >= 2.5, raw-strings-qq >= 1.1
   -- hs-source-dirs:      
   default-language:    Haskell2010

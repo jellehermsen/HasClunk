@@ -66,7 +66,7 @@ listCategories baseUrl cats = Text.concat $ map (\x -> Text.concat
 -------------------------------------------------------------------------------
 -- | 'index' gives all posts for display in the index.html
 index :: Text.Text -> [PostMeta] -> Text.Text
-index baseUrl posts = Text.concat $ map (postHtml baseUrl True) posts
+index baseUrl posts = Text.concat $ map (postHtml baseUrl True False) posts
 
 
 -------------------------------------------------------------------------------
@@ -90,19 +90,19 @@ pageHeader title filename = Text.concat
 -- | 'postHtml' adds header/footer..etc to a given post, you can specifiy
 --   whether to display the entire post, or only an excerpt/teaser with a
 --   "read more" link
-postHtml ::  Text.Text -> Bool -> PostMeta -> Text.Text
-postHtml baseUrl excerpt post = if excerpt
+postHtml ::  Text.Text -> Bool -> Bool -> PostMeta -> Text.Text
+postHtml baseUrl topLevel excerpt post = if excerpt
   && Text.isInfixOf "<!--more-->" content
     then
         Text.concat
           ["<article>"
-          , "<header>\n" , postHeader baseUrl post,   "</header>\n"
+          , "<header>\n" , postHeader baseUrl topLevel post,   "</header>\n"
           , "<section>\n", untilMore content, moreLink post, "</section>\n"
           , "<footer>\n" , postFooter baseUrl post,   "</footer>"
           , "</article>\n\n"]
     else Text.concat
           ["<article>"
-          , "<header>\n" , postHeader baseUrl post, "</header>\n"
+          , "<header>\n" , postHeader baseUrl topLevel post, "</header>\n"
           , "<section>\n", content,         "</section>\n"
           , "<footer>\n" , postFooter baseUrl post, "</footer>\n"
           , "</article>\n\n"]
@@ -115,12 +115,14 @@ postHtml baseUrl excerpt post = if excerpt
 
 -------------------------------------------------------------------------------
 -- | 'postHeader' gives the header for a specific post
-postHeader :: Text.Text -> PostMeta -> Text.Text
-postHeader baseUrl post = Text.concat
-    ["<h1><a href=\"", link, "\">", title post , "</a></h1>\n"
-    , "<time>" , date post, "</time>\n"]
+postHeader :: Text.Text -> Bool -> PostMeta -> Text.Text
+postHeader baseUrl topLevel post = Text.concat
+    ["<", tag topLevel, "><a href=\"", link, "\">", title post , "</a></"
+    , tag topLevel, ">\n" , "<time>" , date post, "</time>\n"]
     where
-    link = Text.concat [baseUrl, "posts/", htmlExt $ fileName post]
+        link = Text.concat [baseUrl, "posts/", htmlExt $ fileName post]
+        tag True = "h1"
+        tag False = "h2"
 
 
 -------------------------------------------------------------------------------
