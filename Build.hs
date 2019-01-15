@@ -96,6 +96,7 @@ build = do
     mapM_ addPageHtml pageTitles
 
     putStrLn $ Text.unpack "Adding templates to files"
+
     -- Add templates to all the html files
     mapM_ (addTemplate (pt "post" header) footer "website/posts/") posts
     mapM_ (addTemplate (pt "page" header) footer "website/pages/") pages
@@ -188,13 +189,16 @@ getPageTitle file = do
         breakOnColon    = Text.breakOn ":"
 
 -------------------------------------------------------------------------------
--- | 'addTemplate' adds the footer ander header to a file
+-- | 'addTemplate' adds the footer ander header to a file, and replaces all
+--   occurences of {page_name} with the file name (without the extension)
 addTemplate :: Text.Text -> Text.Text ->  Text.Text -> Text.Text -> IO ()
 addTemplate header footer directory file = do
     content <- IO.readFile path
-    IO.writeFile path $ Text.concat [header, content, footer]
+    IO.writeFile path $ Text.replace "{page_name}" fileName 
+        $ Text.concat [header, content, footer]
     where
-        path = Text.unpack $ directory `Text.append` (htmlExt $ noExt file)
+        fileName = noExt file
+        path = Text.unpack $ directory `Text.append` (htmlExt fileName)
 
 
 -------------------------------------------------------------------------------

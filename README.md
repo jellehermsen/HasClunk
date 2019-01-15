@@ -61,9 +61,12 @@ config. There's also {title} you can drop in. These will get automatically
 replaced during the build process.
 
 You can use {page_type} inside you header.html. It will be replaced with the
-type of page you're currently visiting (doh). You can use it for example in
+type of page you're currently visiting. You can use it for example in
 &lt;body class="{page_type}"&gt; to be able to add page-specific css trickery.
 The possible values for page_type are: index, category, post and archive.
+
+You can also use {page_name}. This will be replaced with the file name (without
+the extension). You can use this to do even more css based filtering.
 
 Help
 ----
