@@ -1,0 +1,30 @@
+# Vim
+*~
+*.swp
+*.swo
+
+# Haskell-specific
+dist
+cabal-dev
+*.o
+*.hi
+*.chi
+*.chs.h
+*.dyn_o
+*.dyn_hi
+.hpc
+.hsenv
+.cabal-sandbox/
+cabal.config
+cabal.sandbox.config
+*.prof
+*.aux
+*.hp
+*.eventlog
+.stack-work/
+cabal.project.local
+.HTF/
+
+# Personal Build / run scripts
+p.sh
+r.sh
