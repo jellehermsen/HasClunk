@@ -32,6 +32,14 @@ justOrEmpty (Maybe.Just x) = x
 
 
 -------------------------------------------------------------------------------
+-- | 'justOrDefault' takes a Maybe monad and returns
+-- its value (in case of Maybe.Just), or the given default
+justOrDefault :: Maybe.Maybe a -> a -> a
+justOrDefault Maybe.Nothing def = def
+justOrDefault (Maybe.Just x) _  = x
+
+
+-------------------------------------------------------------------------------
 -- | Replaces a tuple in a list of tuples, identified by the first element.
 -- A more generalized version of http://stackoverflow.com/a/10474511
 replaceTuple :: Eq a => [(a, b)] -> (a, b) -> (a, b) -> [(a, b)]
@@ -45,6 +53,13 @@ replaceTuple tups old new = map check tups where
 textToInt :: Text.Text -> Int
 textToInt t = read $ Text.unpack t :: Int
 
+
+-------------------------------------------------------------------------------
+-- | 'textToBool' Converts a given text to an bool
+textToBool :: Text.Text -> Bool
+textToBool "0" = False
+textToBool "1" = True
+textToBool _   = False
 
 -------------------------------------------------------------------------------
 -- | 'htmlExt' appends ".html" to a given Text

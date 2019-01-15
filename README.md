@@ -27,7 +27,8 @@ in front like so: 2015-07-14-teaser-post.md
 
 By default HasClunk uses Pandoc to generate html from your source
 files, but you could use any kind of system you like. Just modify the config
-file and change the "convert" line.
+file and change the "convert" line. You can also change the "extension" line to
+specify the the file extension of the posts/pages. This defaults to ".md".
 
 At the top of your post you should include an html comment that gives some
 metadata.  HasClunk will take this data from the generated html, so you can do
@@ -42,6 +43,8 @@ categories: categoryName
 
 ```
 
+You can use {base_url} in posts to indicate your blog's url defined in your config.
+
 Writing pages
 -------------
 Writing new pages is mostly like writing posts, with the exceptions that you
@@ -54,7 +57,13 @@ HasClunk has two template files, template/header.html and template/footer.html.
 All the generated html files will get smacked between these two files.
 
 You can use {base_url} in these template files to refer to the url in your
-config. It will get automatically replaced during the build process.
+config. There's also {title} you can drop in. These will get automatically
+replaced during the build process.
+
+You can use {page_type} inside you header.html. It will be replaced with the
+type of page you're currently visiting (doh). You can use it for example in
+&lt;body class="{page_type}"&gt; to be able to add page-specific css trickery.
+The possible values for page_type are: index, category, post and archive.
 
 Help
 ----
@@ -100,6 +109,10 @@ The configuration file has the following properties:
                    and convert your odt, if that tickles your fancy :-)
   url            the base-url of the website (mind the trailing /)
   title          the weblog title (for usage in RSS)
+  home_is_page   Use 1 for this optional property to indicate you want to have
+                   a static page as your home. The blog index will be moved to /blog.html in
+                   that case. You can put the static home's contents in pages/home.md
+  extension      Extension use for your content files (default is .md)
 
 Posts need the following metadata on top in an html comment:
 <!--
