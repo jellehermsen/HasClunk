@@ -3,7 +3,7 @@
 {-|
 Module      : Html
 Description : A tiny, dependency light, static blog generator
-Copyright   : (c) Jelle Hermsen, 2015
+Copyright   : (c) Jelle Hermsen
 License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental
@@ -58,7 +58,7 @@ defaultFiles = [
     ("config"                         , defaultFile "config"),
     ("template/header.html"           , defaultFile "header"),
     ("template/footer.html"           , defaultFile "footer"),
-    ("posts/2015-07-14-hello-world.md", defaultFile "post"),
+    ("posts/2020-08-25-hello-world.md", defaultFile "post"),
     ("assets/style.css"               , defaultFile "css"),
     ("pages/contact.md"               , defaultFile "contact")
   ]

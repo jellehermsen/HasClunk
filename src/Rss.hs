@@ -2,7 +2,7 @@
 {-|
 Module      : Rss
 Description : A tiny, dependency light, static blog generator
-Copyright   : (c) Jelle Hermsen, 2015
+Copyright   : (c) Jelle Hermsen
 License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental

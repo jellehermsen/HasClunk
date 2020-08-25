@@ -2,7 +2,7 @@
 {-|
 Module      : Build
 Description : A tiny, dependency light, static blog generator
-Copyright   : (c) Jelle Hermsen, 2015
+Copyright   : (c) Jelle Hermsen
 License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental
@@ -15,7 +15,8 @@ import qualified Data.Maybe       as Maybe
 import qualified Data.Text        as Text
 import qualified Data.Text.IO     as IO
 import qualified System.Directory as Directory
-import qualified System.Cmd       as Cmd
+import qualified System.Process   as Process
+import qualified Config           as Config
 import           System.Directory(copyFile)
 import           Helpers
 import           Html
@@ -35,41 +36,25 @@ build = do
     rawPages   <- Directory.getDirectoryContents $ Text.unpack "pages"
 
     -- Parse the config file
-    let config  = parseConfig rawConfig
-    let url     = justOrError (lookup "url" config)
-            "Could not find 'url' in your config"
-    let title   = justOrError (lookup "title" config)
-            "Could not find 'title' in your config"
-    let description = justOrError (lookup "description" config)
-            "Could not find 'description' in your config"
-    let postsOnHome = Helpers.textToInt
-            $ justOrError (lookup "posts_on_home" config)
-            "Could not find 'posts_on_home' in your config"
-    let baseUrl = justOrError (lookup "url" config)
-            "Could not find 'url' in your config"
-    let extension = justOrDefault (lookup "extension" config) ".md"
-    let homeIsPage = Helpers.textToBool
-            $ justOrDefault (lookup "home_is_page" config) "1"
+    let config  = Config.getConfig rawConfig
 
     -- Weed out all the non-markdown files
-    let posts   = filterFiles extension rawPosts
-    let pages   = filterFiles extension rawPages
+    let posts   = filterFiles (Config.extension config) rawPosts
+    let pages   = filterFiles (Config.extension config) rawPages
 
     -- Create all the markdown conversion commands
-    let convertCmd = justOrError (lookup "convert" config)
-            "Could not find 'convert' in your config"
     let postCmds =
-            map (convertFile "posts/" "website/posts/" convertCmd) posts
+            map (convertFile "posts/" "website/posts/" (Config.convertCmd config)) posts
     let pageCmds =
-            map (convertFile "pages/" "website/pages/" convertCmd) pages
+            map (convertFile "pages/" "website/pages/" (Config.convertCmd config)) pages
 
     -- Retrieve the header and footer files
     headerRaw  <- IO.readFile "template/header.html"
     footerRaw  <- IO.readFile "template/footer.html"
-    let header = Text.replace "{title}" title
-            $ Text.replace "{base_url}" url headerRaw
-    let footer = Text.replace "{title}" title
-            $ Text.replace "{base_url}" url footerRaw
+    let header = Text.replace "{title}" (Config.title config)
+            $ Text.replace "{base_url}" (Config.url config) headerRaw
+    let footer = Text.replace "{title}" (Config.title config)
+            $ Text.replace "{base_url}" (Config.url config) footerRaw
 
     -- Remove the website directory and create a fresh one
     Directory.removeDirectoryRecursive "website"
@@ -78,7 +63,7 @@ build = do
       , "website/categories"]
 
     -- Convert all the posts and pages into html
-    mapM_ Cmd.system $ postCmds ++ pageCmds
+    mapM_ Process.callCommand $ postCmds ++ pageCmds
 
     -- Get the metadata for all the posts
     meta <- mapM getPostMeta posts
@@ -89,7 +74,7 @@ build = do
 
     -- Add post headers to all the posts
     putStrLn $ Text.unpack "Adding postheader to posts"
-    mapM_ (addPostHtml baseUrl) metaSorted
+    mapM_ (addPostHtml config) metaSorted
 
     -- Add page headers to all the pages
     putStrLn $ Text.unpack "Adding pageheaders to pages"
@@ -104,11 +89,11 @@ build = do
     -- Copy all the assets to the website
     -- I've looked at doing this in Haskell, but this leads
     -- to ugly solutions like this: http://is.gd/PMdxUb
-    Cmd.system "cp -R assets/* website/assets/"
+    Process.callCommand "cp -R assets/* website/assets/"
 
     -- Create the category files
     let catList  = categoryList metaSorted
-    let catFiles = map (categoryFile baseUrl
+    let catFiles = map (categoryFile config
             (pt "category" header) footer) catList
 
     mapM_ (\x -> IO.writeFile (Text.unpack $ Text.append "website/" $ fst x)
@@ -116,23 +101,25 @@ build = do
 
     -- Create the archive
     IO.writeFile "website/archive.html" $ Text.concat
-      [pt "archive" header, archive baseUrl catList metaSorted, footer]
+      [pt "archive" header, archive config
+        catList metaSorted, footer]
 
     -- Create the rss feed
-    IO.writeFile "website/feed.xml" $ rss metaSorted title url description
+    IO.writeFile "website/feed.xml" $ rss metaSorted 
+        (Config.title config) (Config.url config) (Config.description config)
 
-    let blogHome = if homeIsPage then "website/blog.html"
+    let blogHome = if (Config.homeIsPage config) then "website/blog.html"
                    else "website/index.html"
 
     -- Create the index
-    if homeIsPage then
+    if (Config.homeIsPage config) then
         copyFile "website/pages/home.html" "website/index.html"
     else
         return ()
 
     IO.writeFile blogHome
-      $ Text.concat [pt "index" header, Html.index baseUrl
-      $ take postsOnHome metaSorted, footer]
+      $ Text.concat [pt "index" header, Html.index config
+      $ take (Config.postsOnHome config) metaSorted, footer]
 
     where
         pt x = Text.replace "{page_type}" x
@@ -203,12 +190,13 @@ addTemplate header footer directory file = do
 
 -------------------------------------------------------------------------------
 -- | 'addPostHtml' adds the header/footer to a post
-addPostHtml :: Text.Text -> PostMeta -> IO ()
-addPostHtml baseUrl post =
-    IO.writeFile path $ postHtml baseUrl True True post
+addPostHtml :: Config.Config -> PostMeta -> IO ()
+addPostHtml config post =
+    IO.writeFile path $ postHtml config True False post
     where
         path = Text.unpack $ Text.append "website/posts/"
           $ htmlExt $ fileName post
+
 
 
 -------------------------------------------------------------------------------
@@ -224,11 +212,11 @@ addPageHtml (filename, title) = do
 
 -------------------------------------------------------------------------------
 -- | 'categoryFile' set up the category html file
-categoryFile :: Text.Text -> Text.Text -> Text.Text -> (Text.Text, [PostMeta])
+categoryFile :: Config.Config -> Text.Text -> Text.Text -> (Text.Text, [PostMeta])
                 -> (Text.Text, Text.Text)
-categoryFile baseUrl header footer cat =
+categoryFile config header footer cat =
   (Text.concat ["categories/", fst cat, ".html"]
-  , Text.concat [header, categoryIndex baseUrl cat, footer])
+  , Text.concat [header, categoryIndex config cat, footer])
 
 
 -------------------------------------------------------------------------------
@@ -277,17 +265,6 @@ mergeCategory cats cat = case lookup (fst cat) cats of
 -- | 'filterFiles' removes all non-markdown files from a list
 filterFiles :: Text.Text -> [FilePath] -> [Text.Text]
 filterFiles ext = filter (Text.isSuffixOf ext) . map Text.pack
-
-
--------------------------------------------------------------------------------
--- | 'parseConfig' parses the config file, without parser combinators :-)
-parseConfig :: Text.Text -> [(Text.Text, Text.Text)]
-parseConfig config = map cleanUpValues $ map (Text.breakOn "=")
-                       $ filter filterConfig $ map Text.strip
-                       $ Text.lines config
-    where
-        filterConfig t = not $ Text.null t || Text.head t == '#'
-        cleanUpValues (f, s) = (Text.strip f, Text.strip $ Text.tail s)
 
 
 -------------------------------------------------------------------------------

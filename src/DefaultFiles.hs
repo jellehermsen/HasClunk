@@ -3,7 +3,7 @@
 {-|
 Module      : Html
 Description : A tiny, dependency light, static blog generator
-Copyright   : (c) Jelle Hermsen, 2015
+Copyright   : (c) Jelle Hermsen
 License     : BSD3
 Maintainer  : j@jelle.xyz
 Stability   : experimental
@@ -36,7 +36,7 @@ posts_on_home = 10
 convert = pandoc -f markdown -w html -o {out} {in}
 
 # The url of the website, mind the trailing /
-url = http://jelle.aard.xyz/test/
+url = /
 
 # The title of the website (used in the RSS)
 title = HasClunk blog
@@ -49,6 +49,17 @@ extension = .md
 
 # By default the home is the blog listing
 home_is_page = 0
+
+# Show categories
+show_categories = 1
+
+# Optional Translations
+i8n_archive = Archive
+i8n_category = Category:
+i8n_categories = Categories
+i8n_filed_under = Filed under:
+i8n_posts = Posts
+i8n_readmore = Read more...
 |]
 
 
@@ -58,9 +69,9 @@ post = [r|<!--
 title: Hello world
 categories: example category
 -->
-# Corporis quae ossa freta quaeratur semper
+#Corporis quae ossa freta quaeratur semper
 
-## Quod eheu licet
+##Quod eheu licet
 
 Lorem markdownum femina quibus Berecyntius: est, iurgia fecit. Ascendere pater,
 caveo *feritatis*: levis procellamnos clipeo petere oppressos Alpino pavet?
@@ -69,7 +80,7 @@ sortita cedere circumque forti sacrilegae!
 
 <!--more-->
 
-## Nurus quoque dextra
+##Nurus quoque dextra
 
 Preces est nec est montis quibus numeroque nomen. Flexerat taedae, solebant, si
 vix percussit ignes stant urbem vocoque vibrantia erat dicam dubitas inposuit,
@@ -82,9 +93,9 @@ secedit, gesserat sorori tetigisse.
 - Tellurem tutaque extensus dabatur
 - Et dextra virga
 
-## Rasilis occursu mea illa iam
+##Rasilis occursu mea illa iam
 
-[Honor](http://jelle.aard.xyz/) ille rapta nec poteram fonte nam ad parili retia
+[Honor](https://jelle.sdf.org/) ille rapta nec poteram fonte nam ad parili retia
 crescere corpus tenent. Miserata Hippasus *ubi Ultor corpus* tormenta, Telchinas
 querellas Lesbi, iaculum sequerere quamquam habitus mecum desideret illa; cum!
 
@@ -92,13 +103,13 @@ querellas Lesbi, iaculum sequerere quamquam habitus mecum desideret illa; cum!
 > penetraret largoque tumulum capiunt vetustas perpetuo. Et vultu imitante sunt
 > levatae occuluit, clausit **nubes**, vidisse. Tauros postquam. Temptamenta
 > bacis in surgere quatere essent mulcendas removerat, fons refer nobis,
-> sparsitque ex [solus nec](http://jelle.aard.xyz/).
+> sparsitque ex [solus nec](https://jelle.sdf.org).
 
-## Rector quam quoniam conata
+##Rector quam quoniam conata
 
 Et sive, dextra, ire gradu ducis Achilles obicit, finem Euboicam sanguineae
 ignes opibus quae bellica minas et? **Ipse una rapacibus** in aura vix una
-superasque virginea facis [in protulit dicturus](http://aard.xyz) me illa:
+superasque virginea facis [in protulit dicturus](https://sdf.org) me illa:
 remos Cenaeo. Maeoniam se iam liceret inducere habitantque sors aut sed veste
 sunt ille virgo, moenia furor insidias. Et est a positaque mundi ipsa: igne et
 ille exactum.
@@ -127,7 +138,7 @@ header = [r|<!DOCTYPE html>
       title="RSS Feed for {title}" href="{base_url}feed.xml" />
     <title>HasClunk blog</title>
 </head>
-<body class="{pageType}">
+<body class="{page_type}">
     <header>
         <h1><a href="{base_url}">{title}</a></h1>
         <a href="{base_url}feed.xml" class="rss"/>RSS</a>
@@ -149,7 +160,7 @@ footer :: Text.Text
 footer = [r|
     </main>
     <footer>
-        <div class="copyright">&copy; 2015</div>
+        <div class="copyright">&copy; 2020</div>
         <div class="hasclunk">
             Weblog ambivalently powered by
             <a href="https://github.com/jellehermsen/HasClunk">HasClunk</a>
@@ -206,7 +217,7 @@ header {
     text-align: center;
 }
 
-header h1 {
+header h1, body.index header h2 {
     float: left;
     line-height: 40px;
     margin: 0px 10px 0px 0px;
@@ -223,7 +234,7 @@ header a.rss {
     border-bottom: none;
 }
 
-header h1 a {
+header h1 a, header h2 a {
     border-bottom: none;
 }
 
@@ -272,7 +283,8 @@ article {
     text-align: left;
 }
 
-article h1:first-child {
+article h1:first-child, 
+body.index h2:first-child {
     margin-top: 0px;
     padding-top: 0px;
 }
@@ -284,6 +296,7 @@ article section {
 article header {
     width: auto;
     height: auto;
+    padding-top: 10px;
 }
 
 article:nth-child(5n+0) header, article:nth-child(5n+0) footer {
@@ -354,10 +367,15 @@ article.categories li, article.archive li {
 
 article.archive h2:first-child {
     margin-top: 0px;
+    margin-left: 0px;
 }
 
 article a.readmore {
     clear: both;
+}
+
+article.archive h2 {
+    margin-left: 5px;
 }
 
 /* --- Mobile -- */
