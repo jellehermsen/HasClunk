@@ -40,8 +40,11 @@ can simply add an html comment on top:
 title: Hello world
 categories: categoryName
 -->
-
 ```
+
+If you want you can also add a description to the metadata. If you want to you
+can use the {meta_description} tag in your template. It will be replaced with
+the description given for the post.
 
 You can use {base_url} in posts to indicate your blog's url defined in your config.
 
@@ -58,7 +61,10 @@ All the generated html files will get smacked between these two files.
 
 You can use {base_url} in these template files to refer to the url in your
 config. There's also {title} you can drop in. These will get automatically
-replaced during the build process.
+replaced during the build process. The title tag is always replaced with the
+title given in the config. You can also use {head_title} and this gets replaced
+with either the main blog title from the config, or the current post or page
+title.
 
 You can use {page_type} inside you header.html. It will be replaced with the
 type of page you're currently visiting. You can use it for example in

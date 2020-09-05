@@ -1,5 +1,5 @@
 name:                HasClunk
-version:             0.3.0.0
+version:             0.4.0.0
 synopsis:            A tiny - dependency light - static blog generator.
 homepage:            https://github.com/jellehermsen/HasClunk
 license:             BSD3
@@ -12,7 +12,7 @@ cabal-version:       >=1.10
 
 executable hasclunk
   main-is:             Main.hs
-  other-modules:       Config, Build, Helpers, Html, PostMeta, Rss
+  other-modules:       Config, Build, Helpers, Html, PostMeta, Rss, DefaultFiles, Init
   other-extensions:    OverloadedStrings
   ghc-options:         -optl-no-pie
   build-depends:       base >=4.6, text >=0.11, directory >=1.2, process >=1.1, template-haskell >= 2.5, raw-strings-qq >= 1.1

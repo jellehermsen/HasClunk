@@ -38,7 +38,7 @@ listPosts baseUrl = Text.concat . map (listPost baseUrl)
 -------------------------------------------------------------------------------
 -- | 'listPost' creates a li with a link for a post
 listPost :: Text.Text -> PostMeta -> Text.Text
-listPost baseUrl (PostMeta t d f _ _) = Text.concat
+listPost baseUrl (PostMeta t d f _ _ _) = Text.concat
     ["<li>"
     , "<a href=\"", baseUrl, "posts/", htmlExt f, "\">"
     ,t," <time>(", d, ")</time></a>"

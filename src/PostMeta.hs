@@ -19,7 +19,8 @@ data PostMeta = PostMeta {
     date        :: Text.Text,
     fileName    :: Text.Text, -- without extension
     categories  :: [Text.Text],
-    html        :: Text.Text
+    html        :: Text.Text,
+    description :: Text.Text
 } deriving Show
 
 

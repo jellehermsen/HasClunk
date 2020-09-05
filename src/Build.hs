@@ -83,13 +83,19 @@ build = do
     putStrLn $ Text.unpack "Adding templates to files"
 
     -- Add templates to all the html files
-    mapM_ (addTemplate (pt "post" header) footer "website/posts/") posts
-    mapM_ (addTemplate (pt "page" header) footer "website/pages/") pages
+    mapM_ (addPostTemplate (pt "post" header) footer "website/posts/" config) (zip posts meta)
+    mapM_ (addPageTemplate (pt "page" header) footer "website/pages/" config) pageTitles
 
     -- Copy all the assets to the website
     -- I've looked at doing this in Haskell, but this leads
     -- to ugly solutions like this: http://is.gd/PMdxUb
     Process.callCommand "cp -R assets/* website/assets/"
+
+
+    -- little convenience function for replacing {head_title} and
+    -- {meta_description} in html
+    let replaceTitleDescr = (Text.replace "{head_title}" (Config.title config))
+            . (Text.replace "{meta_description}" (Config.description config))
 
     -- Create the category files
     let catList  = categoryList metaSorted
@@ -97,12 +103,13 @@ build = do
             (pt "category" header) footer) catList
 
     mapM_ (\x -> IO.writeFile (Text.unpack $ Text.append "website/" $ fst x)
-      (snd x)) catFiles
+      (replaceTitleDescr (snd x))) catFiles
 
     -- Create the archive
-    IO.writeFile "website/archive.html" $ Text.concat
-      [pt "archive" header, archive config
-        catList metaSorted, footer]
+    IO.writeFile "website/archive.html"
+      $ replaceTitleDescr
+      $ Text.concat [pt "archive" header,
+        archive config catList metaSorted, footer]
 
     -- Create the rss feed
     IO.writeFile "website/feed.xml" $ rss metaSorted 
@@ -118,6 +125,7 @@ build = do
         return ()
 
     IO.writeFile blogHome
+      $ replaceTitleDescr
       $ Text.concat [pt "index" header, Html.index config
       $ take (Config.postsOnHome config) metaSorted, footer]
 
@@ -136,11 +144,14 @@ getPostMeta file = do
                      $ Text.replace "<!--" "" $ fst
                      $ Text.breakOn "-->" html
     return (PostMeta (title metaList)
-      (date file) (noExt file) (categories metaList) html)
+      (date file) (noExt file) (categories metaList) html
+      (description metaList))
 
     where
         title m         = justOrError (lookup "title" m)
                             $ "Title not defined in " `Text.append` file
+
+        description m   = justOrEmpty (lookup "description" m)
 
         categories m    = map Text.strip $ Text.splitOn ","
                             $ justOrEmpty (lookup "categories" m)
@@ -176,15 +187,37 @@ getPageTitle file = do
         breakOnColon    = Text.breakOn ":"
 
 -------------------------------------------------------------------------------
--- | 'addTemplate' adds the footer ander header to a file, and replaces all
---   occurences of {page_name} with the file name (without the extension)
-addTemplate :: Text.Text -> Text.Text ->  Text.Text -> Text.Text -> IO ()
-addTemplate header footer directory file = do
+-- | 'addPageTemplate' adds the footer ander header to a file, and replaces all
+--   occurences of {page_name}, {meta_description} and {title}
+addPageTemplate :: Text.Text -> Text.Text ->  Text.Text -> Config.Config
+  -> (Text.Text, Text.Text) -> IO ()
+addPageTemplate header footer directory config (file, title) = do
     content <- IO.readFile path
-    IO.writeFile path $ Text.replace "{page_name}" fileName 
+    IO.writeFile path $ Text.replace "{page_name}" fileName
+        $ Text.replace "{head_title}" title
+        $ Text.replace "{meta_description}" (Config.description config)
+        $ Text.replace "{meta_description}" (Config.description config)
         $ Text.concat [header, content, footer]
     where
         fileName = noExt file
+        path = Text.unpack $ directory `Text.append` (htmlExt fileName)
+
+-------------------------------------------------------------------------------
+-- | 'addPostTemplate' adds the footer ander header to a file, and replaces all
+--   occurences of {page_name}, {meta_description} and {title}
+addPostTemplate :: Text.Text -> Text.Text ->  Text.Text -> Config.Config
+  -> (Text.Text, PostMeta) -> IO ()
+addPostTemplate header footer directory config (file, meta) = do
+    content <- IO.readFile path
+    IO.writeFile path $ Text.replace "{meta_description}" metaDescription
+        $ Text.replace "{head_title}" title
+        $ Text.replace "{page_name}" fileName 
+        $ Text.concat [header, content, footer]
+    where
+        fileName = noExt file
+        pmd = PostMeta.description meta
+        title = PostMeta.title meta
+        metaDescription = if (pmd /= "") then pmd else Config.description config
         path = Text.unpack $ directory `Text.append` (htmlExt fileName)
 
 
